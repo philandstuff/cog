@@ -49,21 +49,21 @@ class _StreamWrapper:
         print(f"wrapped {self.name}")
 
     def unwrap(self) -> None:
-        print(f"unwrapping {self.name}")
+        print(f"fake unwrapping {self.name}")
         if not self._wrapped_fp or not self._original_fp:
             raise RuntimeError("stream is not wrapped (call wrap first)")
 
         # Put the original file descriptor back.
-        os.dup2(self._original_fp.fileno(), self._stream.fileno())
+        # os.dup2(self._original_fp.fileno(), self._stream.fileno())
 
         # Close the write end of the pipe.
-        self._original_fp.close()
+        # self._original_fp.close()
         self._original_fp = None
 
         # Close the read end of the pipe.
-        self._wrapped_fp.close()
+        # self._wrapped_fp.close()
         self._wrapped_fp = None
-        print(f"unwrapped {self.name}")
+        print(f"fake unwrapped {self.name}")
 
     def write(self, data: str) -> int:
         return self._stream.write(data)
