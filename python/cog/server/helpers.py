@@ -21,6 +21,7 @@ class _StreamWrapper:
         self._wrapped_fp: TextIO | None = None
 
     def wrap(self) -> None:
+        print(f"wrapping {self.name}")
         if self._wrapped_fp or self._original_fp:
             raise RuntimeError("stream is already wrapped")
 
@@ -45,8 +46,10 @@ class _StreamWrapper:
         # over multiple wrapped streams.
         os.set_blocking(r, False)
         self._wrapped_fp = os.fdopen(r, "r")
+        print(f"wrapped {self.name}")
 
     def unwrap(self) -> None:
+        print(f"unwrapping {self.name}")
         if not self._wrapped_fp or not self._original_fp:
             raise RuntimeError("stream is not wrapped (call wrap first)")
 
@@ -60,6 +63,7 @@ class _StreamWrapper:
         # Close the read end of the pipe.
         self._wrapped_fp.close()
         self._wrapped_fp = None
+        print(f"unwrapped {self.name}")
 
     def write(self, data: str) -> int:
         return self._stream.write(data)
@@ -84,6 +88,7 @@ if sys.version_info < (3, 9):
 
     class _StreamRedirectorBase(contextlib.AbstractContextManager):
         pass
+
 else:
 
     class _StreamRedirectorBase(contextlib.AbstractContextManager["StreamRedirector"]):
